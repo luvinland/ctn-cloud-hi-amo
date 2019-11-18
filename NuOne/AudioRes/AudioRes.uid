@@ -1,0 +1,34 @@
+; UID file provides user to define play equation, and speech that will be used in program
+
+[Audio]
+; ===================================================================
+; All speech files and files in play equation, should be defined here
+; Syntax
+; 	DEFAUD file_name < ext= 0, format= XXX , bitrate=Y.Y>
+;
+; Description
+;	file_name: The speech file name (without extention name) which will be played in program.
+;	ext: Reserved for future use, set it to 0 now.
+;	format: audio format will be stored in storage
+;		"MD4", "P16", "LP8", "NUS", "NUO", "NUL", "NUV" for speech
+;		"MID" is for Midi.
+;	bitrate: encoded bits for one sample
+;		Range of NUS: 1.5~3.0 bits
+;		Range of NUO: 0.8~2.0 bits
+;		Range of NUL: 0.5~3.0 bits
+;		Range of NUV: 0.3, 0.7, and 0.8
+; ===================================================================
+defaud 01_power_on <ext=0, format=NUO>
+defaud 02_power_off <ext=0, format=NUO>
+defaud 03_1dan_start <ext=0, format=NUO>
+defaud 04_2dan_start <ext=0, format=NUO>
+defaud 05_3dan_start <ext=0, format=NUO>
+defaud 06_time_reserve_1hour <ext=0, format=NUO>
+defaud 07_time_reserve_4hour <ext=0, format=NUO>
+defaud 08_time_reserve_8hour <ext=0, format=NUO>
+defaud 09_ai_mode <ext=0, format=NUO>
+defaud 10_unmute_vr <ext=0, format=NUO>
+defaud 11_mute_vr <ext=0, format=NUO>
+
+
+
