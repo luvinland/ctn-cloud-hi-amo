@@ -193,7 +193,7 @@ void esp_i2c_command(uint8_t cmd)
 }
 #endif
 
-#if 1 // Jace. 191107. SPI2_I2S intput/output, PWM, I2C Master working with ESP32
+#if 0 // Jace. 191107. SPI2_I2S intput/output, PWM, I2C Master working with ESP32 // Jace. 191118. Playback voice prompt using ESP32.
 #define     EMBED_SAMPLE_RATE   8000
 #define     CLOUD_SAMPLE_RATE   16000
 
@@ -349,7 +349,7 @@ int main(void)
 							case 4:
 								g_nPowerOn = FALSE;
                                 esp_i2c_command(POWEROFF);
-                                APROM_Pcm_Play(2);
+                                //APROM_Pcm_Play(2); // Jace. 191118. Playback voice prompt using ESP32.
 								break;
 							case 5: // Fan 1
 							case 6:
@@ -392,7 +392,7 @@ int main(void)
 							case 2:
 								g_nPowerOn = TRUE;
                                 esp_i2c_command(POWERON);
-                                APROM_Pcm_Play(1);
+                                //APROM_Pcm_Play(1); // Jace. 191118. Playback voice prompt using ESP32.
 								break;
 							default:
                                 g_u8Recognized = 1;

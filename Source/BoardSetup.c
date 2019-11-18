@@ -182,6 +182,8 @@ S_BUFCTRL* psSPI_BufCtrl = NULL;            // Provide SPI to output data.
 
 void SPI_Init(S_BUFCTRL* psSpiOutBufCtrl)
 {
+    SYS_UnlockReg(); // Jace. 191118. Improve i2s output perpormance.
+
 	/* Select PCLK0 as the clock source of SPI2 */
 	CLK_SetModuleClock(SPI2_MODULE, CLK_CLKSEL2_SPI2SEL_PCLK0, MODULE_NoMsk);
 
@@ -204,6 +206,8 @@ void SPI_Init(S_BUFCTRL* psSpiOutBufCtrl)
 	SPI_I2S_RST_TX_FIFO(SPI2);
 	SPI_I2S_RST_RX_FIFO(SPI2);
 	NVIC_EnableIRQ(SPI2_IRQn);
+
+    SYS_LockReg(); // Jace. 191118. Improve i2s output perpormance.
 
 	psSPI_BufCtrl = psSpiOutBufCtrl;
 
@@ -232,12 +236,15 @@ void SPI_Stop(void)
 
 void SPI2_IRQHandler()
 {
-	uint32_t u32Tmp, i32Data1;
+	uint32_t u32Tmp, i32Data1, i;
 
 	if( !BUFCTRL_IS_EMPTY(psSPI_BufCtrl) )
 	{
-		BUFCTRL_READ(psSPI_BufCtrl, &u32Tmp);
-		SPI_I2S_WRITE_TX_FIFO(SPI2, u32Tmp);
+	    for(i = 0; i < 2; i++) // Jace. 191118. Improve i2s output perpormance.
+        {   
+    		BUFCTRL_READ(psSPI_BufCtrl, &u32Tmp);
+    		SPI_I2S_WRITE_TX_FIFO(SPI2, u32Tmp);
+        }
 	}
 	else
 	{
@@ -282,7 +289,7 @@ void SPK_Init(S_BUFCTRL* psOutBufCtrl, uint32_t u32SampleRate)
 		//DPWM_SET_FIFODATAWIDTH(DPWM, DPWM_FIFO_DATAWIDTH_MSB24BITS);
 		DPWM_SET_FIFODATAWIDTH(DPWM, DPWM_FIFO_DATAWIDTH_16BITS);
 		
-		DPWM_ENABLE_FIFOTHRESHOLDINT(DPWM, 8);
+		DPWM_ENABLE_FIFOTHRESHOLDINT(DPWM, 12); // Jace. 191118. Improve i2s output perpormance.
 		// Enable NVIC.
 		NVIC_EnableIRQ(DPWM_IRQn);
 
@@ -315,12 +322,14 @@ void SPK_Stop(void)
 	CLK_DisableModuleClock(DPWM_MODULE);
 }
 
+/* // Jace. 191118. Playback voice prompt using ESP32.
 void SPK_Restart(uint32_t u32SampleRate)
 {
     SPK_Stop();
     SPK_Init((S_BUFCTRL*)&sOutBufCtrl, u32SampleRate);
     SPK_Start();
 }
+*/
 
 void DPWM_IRQHandler(void) 
 {

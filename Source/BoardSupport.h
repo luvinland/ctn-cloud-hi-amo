@@ -145,7 +145,7 @@ void MIC_Stop(void);
 void SPK_Init(S_BUFCTRL* psOutBufCtrl, uint32_t u32SampleRate);
 void SPK_Start(void);
 void SPK_Stop(void);
-void SPK_Restart(uint32_t u32SampleRate);
+//void SPK_Restart(uint32_t u32SampleRate); // Jace. 191118. Playback voice prompt using ESP32.
 void SPI_Init(S_BUFCTRL* psSpiOutBufCtrl);
 void SPI_Start(void);
 void SPI_Stop(void);
