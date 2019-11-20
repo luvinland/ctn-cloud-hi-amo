@@ -1,4 +1,26 @@
 ## ChangeLog
+
+### 0.2 - 2019-10-14
+
+**Enhancements**
+
+* AMO Vent Cleaner 와 UART 통신 구현. (Vent ↔ Module 양방향).
+* AMO Vent Cleaner 설계 v0.4.pdf 에 의거한 명령어 수행.
+* "// Jace. 191014. Add control interface using UART0." 주석 참조.
+  * 음성인식모드 ON/OFF 음원 2개 추가됨.
+
+**API Changes**
+
+* None.
+
+**Bug Fixed**
+
+* None.
+
+**Known Issues/Improvements**
+
+* None.
+
 ### 0.1 - 2019-09-25
 
 **Enhancements**
