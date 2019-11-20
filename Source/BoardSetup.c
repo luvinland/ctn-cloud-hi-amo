@@ -342,7 +342,7 @@ void DPWM_IRQHandler(void)
 	} 
 	else 
 	{
-		for(i = 0; i < 6; i++) // Jace. 191119. Improve PWM output perpormance. 
+		for(i = 0; i < 4; i++)
 		{
 			//if(!DPWM_IS_FIFOFULL(DPWM)) 
 			{
