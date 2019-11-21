@@ -1,4 +1,26 @@
 ## ChangeLog
+### 1.1 - 2019-11-21
+
+**Enhancements**
+
+* None.
+
+**API Changes**
+
+* None.
+
+**Bug Fixed**
+
+* ESP32 로 보내는 SPI2_I2S 마이크 데이터 성능 추가 개선.
+  * 버퍼 사이즈 수정 및 우선순위 변경.
+  * `// Jace. 191121. Improve spi output performance.` 주석 참조.
+* 스피커 출력음 추가 개선.
+  * `// Jace. 191121. Improve pwm output performance.` 주석 참조.
+
+**Known Issues/Improvements**
+
+* 아직까지 스피커 출력음에 미세한 불필요한 노이즈 있음.
+
 ### 1.0 - 2019-11-18
 
 **Enhancements**

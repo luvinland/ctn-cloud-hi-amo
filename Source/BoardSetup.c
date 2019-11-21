@@ -38,10 +38,10 @@ S_CIRBUFCTRL sCirBufCtrl;
 
 #if 1 // Jace. 191107. SPI2_I2S intput/output, PWM, I2C Master working with ESP32
 volatile S_BUFCTRL sOutBufCtrl;
-int32_t    ai32OutBuf[AWE_FRAME_SIZE * OUTPUT_CHANNEL_COUNT]; 	  // Buffer array: store audio data ready to send to DPWM
+int32_t    ai32OutBuf[INPUT_CHANNEL_COUNT * AWE_FRAME_SIZE * 2]; 	  // Buffer array: store audio data ready to send to DPWM // Jace. 191121. Improve pwm output performance.
 
 volatile S_BUFCTRL sSpiOutBufCtrl;
-int32_t    ai32SpiOutBuf[AWE_FRAME_SIZE * OUTPUT_CHANNEL_COUNT];
+int32_t    ai32SpiOutBuf[INPUT_CHANNEL_COUNT * AWE_FRAME_SIZE * 2]; // Jace. 191121. Improve spi output performance.
 #endif
 
 // Function prototype declaration
@@ -251,7 +251,7 @@ void SPI2_IRQHandler()
 		//printf("psSPI_BufCtrl empty\n");
 	}
 
-	//if( SPI_I2S_IS_RX_EMPTY(SPI2) == FALSE)
+	while( BUFCTRL_GET_COUNT((&sInBufCtrl)) >= 2 && !BUFCTRL_IS_FULL((&sOutBufCtrl)) ) // Jace. 191121. Improve pwm output performance.
 	{
         i32Data1 = SPI_I2S_READ_RX_FIFO(SPI2);
         BUFCTRL_WRITE((&sOutBufCtrl), i32Data1);
@@ -289,7 +289,7 @@ void SPK_Init(S_BUFCTRL* psOutBufCtrl, uint32_t u32SampleRate)
 		//DPWM_SET_FIFODATAWIDTH(DPWM, DPWM_FIFO_DATAWIDTH_MSB24BITS);
 		DPWM_SET_FIFODATAWIDTH(DPWM, DPWM_FIFO_DATAWIDTH_16BITS);
 		
-		DPWM_ENABLE_FIFOTHRESHOLDINT(DPWM, 12); // Jace. 191118. Improve i2s output perpormance.
+		DPWM_ENABLE_FIFOTHRESHOLDINT(DPWM, 15); // Jace. 191118. Improve i2s output perpormance. // Jace. 191121. Improve spi output performance.
 		// Enable NVIC.
 		NVIC_EnableIRQ(DPWM_IRQn);
 
@@ -335,25 +335,28 @@ void DPWM_IRQHandler(void)
 {
 	uint32_t u32Tmp, i;
 
-	if( BUFCTRL_IS_EMPTY(psSPK_BufCtrl) ) 
+	if( BUFCTRL_IS_EMPTY(psSPK_BufCtrl) ) // Jace. 191121. Improve pwm output performance.
 	{
-        //for( i=0; i<8; i++ )
-        	DPWM_WRITE_INDATA(DPWM, 0);
+		if( DPWM_IS_FIFOEMPTY(DPWM) )
+		{
+			for( i = 0; i < 8; i++ )
+				DPWM_WRITE_INDATA(DPWM, 0);
+		}
 	} 
 	else 
 	{
 		for(i = 0; i < 4; i++)
 		{
-			//if(!DPWM_IS_FIFOFULL(DPWM)) 
+			if(!DPWM_IS_FIFOFULL(DPWM)) 
 			{
-				//if( !BUFCTRL_IS_EMPTY(psSPK_BufCtrl) )
+				if( !BUFCTRL_IS_EMPTY(psSPK_BufCtrl) )
 				{
 					BUFCTRL_READ(psSPK_BufCtrl, &u32Tmp);
 					DPWM_WRITE_INDATA(DPWM, u32Tmp);
 				}
 			}
-			//else
-				//break;
+			else
+				break;
 		}
 	}
 
